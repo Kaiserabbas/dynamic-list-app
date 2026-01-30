@@ -11,13 +11,16 @@ const ItemList = ({ items, customKeys, onEdit, onDelete, search, setSearch, sort
     );
   }
 
+  // Sort items by date (newest first)
+  const sortedItems = [...items].sort((a, b) => new Date(b.date) - new Date(a.date));
+
   // Check which optional columns to show
-  const hasQuantity = items.some(item => item.quantity !== undefined);
-  const hasPrice = items.some(item => item.price !== undefined);
-  const hasTotal = items.some(item => item.total !== undefined);
-  const hasNotes = items.some(item => item.notes !== undefined);
-  const hasCategory = items.some(item => item.category !== undefined);
-  const hasAddedBy = items.some(item => item.addedBy !== undefined);
+  const hasQuantity = sortedItems.some(item => item.quantity !== undefined);
+  const hasPrice = sortedItems.some(item => item.price !== undefined);
+  const hasTotal = sortedItems.some(item => item.total !== undefined);
+  const hasNotes = sortedItems.some(item => item.notes !== undefined);
+  const hasCategory = sortedItems.some(item => item.category !== undefined);
+  const hasAddedBy = sortedItems.some(item => item.addedBy !== undefined);
 
   const toggleSort = (key) => {
     if (sortBy === key) {
@@ -50,6 +53,11 @@ const ItemList = ({ items, customKeys, onEdit, onDelete, search, setSearch, sort
           </button>
         </div>
       </div>
+      <div className="mb-4 text-center">
+        <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+          Today's Date: {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+        </p>
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
           <thead className="bg-gray-200 dark:bg-gray-700">
@@ -68,7 +76,7 @@ const ItemList = ({ items, customKeys, onEdit, onDelete, search, setSearch, sort
             </tr>
           </thead>
           <tbody>
-            {items.map(item => (
+            {sortedItems.map(item => (
               <tr key={item.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition">
                 <td className="px-4 py-2">{item.name}</td>
                 {hasQuantity && <td className="px-4 py-2">{item.quantity ?? '-'}</td>}

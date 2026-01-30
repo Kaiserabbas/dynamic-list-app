@@ -11,6 +11,7 @@ const ItemFormModal = ({ isOpen, onClose, onSubmit, initialData = {}, title }) =
   const [hasCategory, setHasCategory] = useState(!!initialData.category);
   const [category, setCategory] = useState(initialData.category || '');
   const [addedBy, setAddedBy] = useState(initialData.addedBy || '');
+  const [date, setDate] = useState(initialData.date || new Date().toISOString().split('T')[0]);
   const [customFields, setCustomFields] = useState(initialData.customFields || {});
   const [newCustomKey, setNewCustomKey] = useState('');
   const [newCustomValue, setNewCustomValue] = useState('');
@@ -40,6 +41,7 @@ const ItemFormModal = ({ isOpen, onClose, onSubmit, initialData = {}, title }) =
     const item = {
       id: initialData.id,
       name: name.trim(),
+      date: date,
       ...(addedBy && { addedBy: addedBy.trim() }),
       ...(hasQuantity && { quantity: Number(quantity) }),
       ...(hasPrice && { price: Number(price) }),
