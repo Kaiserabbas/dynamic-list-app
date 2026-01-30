@@ -4,7 +4,7 @@ import { MoonIcon, SunIcon, PlusIcon } from '@heroicons/react/24/outline';
 const Header = ({ darkMode, setDarkMode, setIsAddModalOpen }) => {
   return (
     <header className="bg-white dark:bg-gray-800 shadow-md p-4 flex justify-between items-center">
-      <h1 className="text-xl font-bold">Dynamic List Dashboard</h1>
+      <h1 className="text-xl font-bold">SouqStack</h1>
       <div className="flex items-center space-x-4">
         <button
           onClick={() => setIsAddModalOpen(true)}
