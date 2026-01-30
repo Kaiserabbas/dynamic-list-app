@@ -47,7 +47,8 @@ function App() {
         dispatch({ type: 'EDIT_ITEM', payload: updatedItem });
       });
     }
-  }, []); // Run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items]); // Include items in dependency array
 
   // Dark mode persistence
   const [darkMode, setDarkMode] = useLocalStorage('darkMode', false);
