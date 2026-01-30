@@ -1,3 +1,4 @@
+// src/App.js
 import React, { useReducer, useState, useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -30,6 +31,23 @@ function App() {
   useEffect(() => {
     localStorage.setItem('items', JSON.stringify(items));
   }, [items]);
+
+  // Migrate old items to include createdAt and createdBy
+  useEffect(() => {
+    const migrated = items.map(item => ({
+      ...item,
+      createdAt: item.createdAt || new Date().toISOString(),
+      createdBy: item.createdBy || 'Unknown',
+    }));
+    if (JSON.stringify(migrated) !== JSON.stringify(items)) {
+      // Update localStorage directly; reload or dispatch if needed
+      localStorage.setItem('items', JSON.stringify(migrated));
+      // For immediate reflection, dispatch a batch update (optional)
+      migrated.forEach(updatedItem => {
+        dispatch({ type: 'EDIT_ITEM', payload: updatedItem });
+      });
+    }
+  }, []); // Run once on mount
 
   // Dark mode persistence
   const [darkMode, setDarkMode] = useLocalStorage('darkMode', false);
@@ -93,7 +111,7 @@ function App() {
     setIsEditModalOpen(true);
   };
 
-  // Filter and sort items
+  // Filter items
   const filteredItems = items
     .filter(item => {
       const searchLower = search.toLowerCase();
@@ -103,19 +121,9 @@ function App() {
         (item.price && String(item.price).includes(searchLower)) ||
         (item.notes && item.notes.toLowerCase().includes(searchLower)) ||
         (item.category && item.category.toLowerCase().includes(searchLower)) ||
+        (item.createdBy && item.createdBy.toLowerCase().includes(searchLower)) ||
         Object.values(item.customFields || {}).some(val => String(val).toLowerCase().includes(searchLower))
       );
-    })
-    .sort((a, b) => {
-      let valA = a[sortBy];
-      let valB = b[sortBy];
-      if (sortBy === 'total') {
-        valA = a.quantity * a.price || 0;
-        valB = b.quantity * b.price || 0;
-      }
-      if (valA < valB) return sortDir === 'asc' ? -1 : 1;
-      if (valA > valB) return sortDir === 'asc' ? 1 : -1;
-      return 0;
     });
 
   // Collect unique custom keys for dynamic columns
